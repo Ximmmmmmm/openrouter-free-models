@@ -528,6 +528,7 @@ async function fetchUptime() {
     if (uptimeMap[m.id] != null) m.uptime = uptimeMap[m.id];
   });
 }
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ea = s => esc(s).replace(/`/g,"&#96;");
 
 function tag(l, c) { return `<span class="tag ${c}">${esc(l)}</span>`; }
