@@ -563,6 +563,7 @@ function card(m) {
       </div>
       <div style="margin-top:2px">${uptimeBar(m.uptime)}</div>
     </div>`;
+}
 
 function tblRow(m) {
   const types = [isAnon(m)?"匿名":"", isRouter(m)?"路由":"", isPrev(m)?"预览":"", hasVis(m)?"视觉":"", hasAud(m)?"音频":"", isLarge(m)?"≥500K":""].filter(Boolean);
