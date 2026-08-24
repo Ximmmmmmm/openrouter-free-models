@@ -1,475 +1,247 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>OpenRouter 免费模型</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenRouter 免费模型</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #0d1117; color: #c9d1d9; font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif; }
+  body { max-width: 1160px; margin: 0 auto; padding: 32px 20px 60px; }
 
-    html {
-      background: #0d1117;
-      color: #c9d1d9;
-      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
+  header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid #21262d; }
+  header h1 { font-size: 20px; font-weight: 600; color: #f0f6fc; }
+  header .sub { font-size: 12px; color: #8b949e; }
+  .status { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8b949e; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #484f58; }
+  .dot.live { background: #3fb950; } .dot.off { background: #f85149; } .dot.busy { background: #d2991d; animation: pulse .8s infinite; }
+  @keyframes pulse { 50% { opacity: .3; } }
 
-    body {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
+  /* controls */
+  .bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .bar input, .bar select { background: #161b22; color: #c9d1d9; border: 1px solid #30363d; border-radius: 4px; padding: 8px 10px; font: inherit; font-size: 13px; outline: none; }
+  .bar input:focus, .bar select:focus { border-color: #58a6ff; }
+  .bar input { flex: 1; min-width: 180px; }
+  .bar input::placeholder { color: #484f58; }
 
-    /* ── header ── */
-    header {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #21262d;
-    }
-    header h1 {
-      font-size: 22px;
-      font-weight: 600;
-      color: #f0f6fc;
-      letter-spacing: -0.3px;
-    }
-    header .sub {
-      font-size: 13px;
-      color: #8b949e;
-    }
-    .status-line {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: #8b949e;
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #484f58;
-    }
-    .status-dot.live  { background: #3fb950; }
-    .status-dot.off   { background: #f85149; }
-    .status-dot.load  { background: #d2991d; animation: pulse .8s infinite; }
-    @keyframes pulse { 50% { opacity: .3; } }
+  button { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; border-radius: 4px; padding: 8px 14px; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
+  button:hover { background: #30363d; }
+  button.green { background: #238636; border-color: #238636; color: #fff; }
+  button.green:hover { background: #2ea043; }
 
-    /* ── controls ── */
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .controls input,
-    .controls select {
-      background: #161b22;
-      color: #c9d1d9;
-      border: 1px solid #30363d;
-      border-radius: 4px;
-      padding: 8px 10px;
-      font: inherit;
-      font-size: 13px;
-      outline: none;
-    }
-    .controls input:focus,
-    .controls select:focus {
-      border-color: #58a6ff;
-    }
-    .controls input { flex: 1; min-width: 180px; }
-    .controls input::placeholder { color: #484f58; }
+  /* tabs */
+  .tabs { display: flex; gap: 2px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tabs button { background: none; border: none; border-bottom: 2px solid transparent; border-radius: 0; color: #8b949e; padding: 6px 12px; font-size: 13px; }
+  .tabs button:hover { color: #c9d1d9; background: none; }
+  .tabs button.on { color: #f0f6fc; border-bottom-color: #f78166; }
 
-    button {
-      background: #21262d;
-      color: #c9d1d9;
-      border: 1px solid #30363d;
-      border-radius: 4px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 13px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    button:hover { background: #30363d; }
-    button.primary {
-      background: #238636;
-      border-color: #238636;
-      color: #fff;
-    }
-    button.primary:hover { background: #2ea043; }
+  /* stats */
+  .stats { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; font-size: 12px; color: #8b949e; }
+  .stats b { color: #f0f6fc; }
 
-    /* ── tabs ── */
-    .tabs {
-      display: flex;
-      gap: 2px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .tab {
-      background: transparent;
-      color: #8b949e;
-      border: none;
-      border-bottom: 2px solid transparent;
-      border-radius: 0;
-      padding: 6px 12px;
-      font-size: 13px;
-    }
-    .tab:hover { color: #c9d1d9; background: transparent; }
-    .tab.active {
-      color: #f0f6fc;
-      border-bottom-color: #f78166;
-    }
+  /* cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 10px; }
+  .card { background: #161b22; border: 1px solid #21262d; border-radius: 5px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .card.stealth { border-left: 3px solid #f85149; }
+  .card.router  { border-left: 3px solid #d2991d; }
 
-    /* ── stats row ── */
-    .stats-row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: #8b949e;
-    }
-    .stats-row span strong {
-      color: #f0f6fc;
-      font-weight: 600;
-    }
+  .card .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .card .name { font-weight: 600; font-size: 14px; color: #f0f6fc; word-break: break-word; }
+  .card .mid { font-family: "SF Mono", Consolas, monospace; font-size: 11px; color: #8b949e; margin-top: 3px; word-break: break-all; }
 
-    /* ── model list ── */
-    .model-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 12px;
-    }
-    .model-card {
-      background: #161b22;
-      border: 1px solid #21262d;
-      border-radius: 6px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .model-card.stealth { border-left: 3px solid #f85149; }
-    .model-card.router  { border-left: 3px solid #d2991d; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag { padding: 2px 7px; border-radius: 3px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .tag-free   { background: #1a4025; color: #3fb950; }
+  .tag-anon   { background: #3d1f1a; color: #f85149; }
+  .tag-router { background: #3d3517; color: #d2991d; }
+  .tag-vision { background: #152545; color: #58a6ff; }
+  .tag-audio  { background: #2a1a3d; color: #bc8cff; }
+  .tag-other  { background: #1a2733; color: #8b949e; }
+  .tag-ctx    { background: #1d3328; color: #7ee787; }
 
-    .model-card .top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .model-card .name {
-      font-weight: 600;
-      font-size: 15px;
-      color: #f0f6fc;
-      word-break: break-word;
-    }
-    .model-card .model-id {
-      font-family: "SF Mono", Consolas, monospace;
-      font-size: 12px;
-      color: #8b949e;
-      margin-top: 4px;
-      word-break: break-all;
-    }
-    .model-card button.copy-btn {
-      flex-shrink: 0;
-      padding: 4px 8px;
-      font-size: 11px;
-    }
+  .card .info { font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .card .info b { color: #c9d1d9; }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .tag {
-      display: inline-block;
-      padding: 2px 7px;
-      border-radius: 3px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .tag-free    { background: #1a4025; color: #3fb950; }
-    .tag-anon    { background: #3d1f1a; color: #f85149; }
-    .tag-router  { background: #3d3517; color: #d2991d; }
-    .tag-vision  { background: #152545; color: #58a6ff; }
-    .tag-audio   { background: #2a1a3d; color: #bc8cff; }
-    .tag-preview { background: #1a2733; color: #8b949e; }
-    .tag-ctx     { background: #1d3328; color: #7ee787; }
+  /* uptime bars */
+  .uptimes { display: flex; flex-direction: column; gap: 3px; }
+  .urow { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #8b949e; }
+  .urow .ulabel { width: 24px; text-align: right; flex-shrink: 0; }
+  .ubar { flex: 1; height: 3px; background: #21262d; border-radius: 2px; overflow: hidden; }
+  .ubar .fill { height: 100%; border-radius: 2px; transition: width .3s; }
+  .fill.good { background: #3fb950; } .fill.warn { background: #d2991d; } .fill.bad { background: #f85149; }
 
-    .model-card .details {
-      font-size: 12px;
-      color: #8b949e;
-      line-height: 1.7;
-    }
-    .model-card .details b {
-      color: #c9d1d9;
-      font-weight: 500;
-    }
+  /* table */
+  .twrap { display: none; overflow-x: auto; border: 1px solid #21262d; border-radius: 5px; margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; min-width: 800px; }
+  th, td { padding: 9px 10px; text-align: left; font-size: 12px; border-bottom: 1px solid #21262d; }
+  th { color: #c9d1d9; font-weight: 600; background: #171c24; position: sticky; top: 0; }
+  td { color: #c9d1d9; }
+  td code { font-family: "SF Mono", Consolas, monospace; font-size: 11px; color: #8b949e; }
+  tr:last-child td { border-bottom: none; }
+  td .urow { font-size: 10px; }
 
-    /* uptime bar */
-    .uptime-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      color: #8b949e;
-    }
-    .uptime-bar {
-      flex: 1;
-      height: 4px;
-      background: #21262d;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .uptime-bar .fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width .3s;
-    }
-    .uptime-bar .fill.good { background: #3fb950; }
-    .uptime-bar .fill.warn { background: #d2991d; }
-    .uptime-bar .fill.bad  { background: #f85149; }
-    .uptime-pct { font-variant-numeric: tabular-nums; min-width: 48px; text-align: right; }
+  .empty { grid-column: 1/-1; text-align: center; padding: 30px; color: #484f58; }
 
-    /* ── table view ── */
-    .table-wrap {
-      display: none;
-      overflow-x: auto;
-      border: 1px solid #21262d;
-      border-radius: 6px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 700px;
-    }
-    th, td {
-      padding: 10px 12px;
-      text-align: left;
-      font-size: 13px;
-      border-bottom: 1px solid #21262d;
-    }
-    th {
-      color: #c9d1d9;
-      font-weight: 600;
-      background: #171c24;
-      position: sticky; top: 0;
-    }
-    td { color: #c9d1d9; }
-    td code {
-      font-family: "SF Mono", Consolas, monospace;
-      font-size: 12px;
-      color: #8b949e;
-    }
-    tr:last-child td { border-bottom: none; }
+  /* note */
+  .note { margin-top: 16px; padding: 12px; background: #161b22; border: 1px solid #21262d; border-radius: 5px; font-size: 12px; color: #8b949e; line-height: 1.6; }
+  .note a { color: #58a6ff; }
 
-    /* ── quick ref ── */
-    .quick-ref {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 10px;
-      margin-bottom: 24px;
-    }
-    .ref-item {
-      background: #161b22;
-      border: 1px solid #21262d;
-      border-radius: 6px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .ref-item code {
-      font-family: "SF Mono", Consolas, monospace;
-      font-size: 12px;
-      color: #f0f6fc;
-      word-break: break-all;
-    }
-    .ref-item .label {
-      font-size: 11px;
-      color: #8b949e;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-bottom: 2px;
-    }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: #238636; color: #fff; padding: 8px 16px; border-radius: 4px; font-size: 13px; opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .15s, transform .15s; }
+  .toast.show { opacity: 1; transform: translateY(0); }
 
-    /* ── empty ── */
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 30px;
-      color: #484f58;
-      font-size: 14px;
-    }
-
-    /* ── toast ── */
-    .toast {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      background: #238636;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 13px;
-      opacity: 0;
-      transform: translateY(6px);
-      pointer-events: none;
-      transition: opacity .15s, transform .15s;
-    }
-    .toast.show { opacity: 1; transform: translateY(0); }
-
-    @media (max-width: 600px) {
-      body { padding: 20px 14px 40px; }
-      .model-list { grid-template-columns: 1fr; }
-      .quick-ref { grid-template-columns: 1fr; }
-    }
-  </style>
+  @media (max-width: 600px) { body { padding: 16px 12px; } .grid { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>OpenRouter 免费模型</h1>
-    <span class="sub">所有输入/输出均为 $0 的公开模型</span>
-  </div>
-  <span class="status-line">
-    <span class="status-dot load" id="statusDot"></span>
-    <span id="statusText">加载中</span>
-  </span>
+  <div><h1>OpenRouter 免费模型</h1><span class="sub">输入/输出价格均为 $0</span></div>
+  <span class="status"><span class="dot busy" id="statusDot"></span><span id="statusText">加载中</span></span>
 </header>
 
-<div class="quick-ref">
-  <div class="ref-item">
-    <div>
-      <div class="label">最佳匿名</div>
-      <code id="bestAnon">stealth/ox-alpha</code>
-    </div>
-    <button data-copy="stealth/ox-alpha">复制</button>
-  </div>
-  <div class="ref-item">
-    <div>
-      <div class="label">免费路由</div>
-      <code>openrouter/free</code>
-    </div>
-    <button data-copy="openrouter/free">复制</button>
-  </div>
-  <div class="ref-item">
-    <div>
-      <div class="label">最佳视觉</div>
-      <code id="bestVision">nvidia/nemotron-nano-12b-v2-vl:free</code>
-    </div>
-    <button data-copy="nvidia/nemotron-nano-12b-v2-vl:free">复制</button>
-  </div>
-</div>
-
-<div class="controls">
-  <input type="search" id="searchBox" placeholder="搜索模型名或 ID...">
-  <select id="sortSelect">
-    <option value="recommended">推荐排序</option>
-    <option value="context">上下文最大</option>
-    <option value="name">名称 A→Z</option>
-    <option value="id">ID A→Z</option>
+<div class="bar">
+  <input type="search" id="search" placeholder="搜索模型名或 ID...">
+  <select id="sort">
+    <option value="recommended">推荐排序</option><option value="uptime">可用率最高</option><option value="context">上下文最大</option><option value="name">名称 A→Z</option><option value="id">ID A→Z</option>
   </select>
-  <select id="viewSelect">
-    <option value="cards">卡片</option>
-    <option value="table">表格</option>
-  </select>
-  <button class="primary" id="refreshBtn">刷新</button>
-  <button id="exportBtn">导出 JSON</button>
+  <select id="view"><option value="cards">卡片</option><option value="table">表格</option></select>
+  <button class="green" id="refreshBtn">刷新</button>
 </div>
 
 <div class="tabs">
-  <button class="tab active" data-filter="all">全部</button>
-  <button class="tab" data-filter="anonymous">匿名</button>
-  <button class="tab" data-filter="router">路由</button>
-  <button class="tab" data-filter="preview">预览</button>
-  <button class="tab" data-filter="vision">视觉</button>
-  <button class="tab" data-filter="audio">音频</button>
-  <button class="tab" data-filter="largeContext">≥500K</button>
+  <button class="on" data-f="all">全部</button>
+  <button data-f="anonymous">匿名</button>
+  <button data-f="router">路由</button>
+  <button data-f="preview">预览</button>
+  <button data-f="vision">视觉</button>
+  <button data-f="audio">音频</button>
+  <button data-f="largeContext">≥500K</button>
 </div>
 
-<div class="stats-row">
-  <span>共 <strong id="freeCount">0</strong> 个免费模型</span>
-  <span>匿名 <strong id="anonCount">0</strong></span>
-  <span>预览 <strong id="previewCount">0</strong></span>
-  <span>视觉 <strong id="visionCount">0</strong></span>
-  <span>最大上下文 <strong id="maxContext">0</strong></span>
+<div class="stats">
+  <span>共 <b id="freeCount">0</b> 个模型</span>
+  <span>匿名 <b id="anonCount">0</b></span>
+  <span>视觉 <b id="visionCount">0</b></span>
+  <span>最大上下文 <b id="maxContext">0</b></span>
   <span class="sub" id="fetchedAt"></span>
 </div>
 
-<div class="model-list" id="modelGrid"></div>
-<div class="table-wrap" id="tableWrap">
-  <table>
-    <thead>
-      <tr>
-        <th>模型</th><th>ID</th><th>类型</th><th>上下文</th><th>输入</th><th>输出</th><th>24h 可用率</th><th></th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+<div class="grid" id="grid"></div>
+<div class="twrap" id="twrap">
+  <table><thead><tr><th>模型</th><th>ID</th><th>类型</th><th>上下文</th><th>可用率</th><th>输入</th><th>输出</th><th></th></tr></thead><tbody id="tbody"></tbody></table>
+</div>
+
+<div class="note">
+  <b>可用率</b> 来自 OpenRouter 公开 API（<code>/models/{id}/endpoints</code>），无需 key。<br>
+  <b>延迟 & 吞吐量</b> 需要 <a href="https://openrouter.ai/keys" target="_blank">Management Key</a> 才能通过 <code>/activity</code> 接口获取，普通 API key 无权访问。
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const API_URL = "https://openrouter.ai/api/v1/models";
-const SNAPSHOT = {
-  fetchedAt: "2026-08-24",
-  freeModels: [
-    { id: "cohere/north-mini-code:free", name: "Cohere: North Mini Code (free)", context_length: 256000, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "dots-studio/dots-3-note-preview:free", name: "Dots Studio: Dots3-Note Preview (free)", context_length: 512000, input_modalities: ["text", "image"], output_modalities: ["text"] },
-    { id: "google/gemma-4-26b-a4b-it:free", name: "Google: Gemma 4 26B A4B (free)", context_length: 262144, input_modalities: ["image", "text", "video"], output_modalities: ["text"] },
-    { id: "google/gemma-4-31b-it:free", name: "Google: Gemma 4 31B (free)", context_length: 262144, input_modalities: ["image", "text", "video"], output_modalities: ["text"] },
-    { id: "google/lyria-3-clip-preview", name: "Google: Lyria 3 Clip Preview", context_length: 1048576, input_modalities: ["text", "image"], output_modalities: ["text", "audio"] },
-    { id: "google/lyria-3-pro-preview", name: "Google: Lyria 3 Pro Preview", context_length: 1048576, input_modalities: ["text", "image"], output_modalities: ["text", "audio"] },
-    { id: "liquid/lfm-2.5-2.6b:free", name: "LiquidAI: LFM2.5-2.6B (free)", context_length: 65536, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3.5-content-safety:free", name: "NVIDIA: Nemotron 3.5 Content Safety (free)", context_length: 128000, input_modalities: ["text", "image"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3.5-lightning:free", name: "NVIDIA: Nemotron 3.5 Lightning (free)", context_length: 1000000, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3-nano-30b-a3b:free", name: "NVIDIA: Nemotron 3 Nano 30B A3B (free)", context_length: 256000, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", name: "NVIDIA: Nemotron 3 Nano Omni (free)", context_length: 256000, input_modalities: ["text", "audio", "image", "video"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3-super-120b-a12b:free", name: "NVIDIA: Nemotron 3 Super (free)", context_length: 262144, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-3-ultra-550b-a55b:free", name: "NVIDIA: Nemotron 3 Ultra (free)", context_length: 1000000, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "NVIDIA: Nemotron Nano 12B 2 VL (free)", context_length: 128000, input_modalities: ["image", "text", "video"], output_modalities: ["text"] },
-    { id: "nvidia/nemotron-nano-9b-v2:free", name: "NVIDIA: Nemotron Nano 9B V2 (free)", context_length: 128000, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "openrouter/free", name: "Free Models Router", context_length: 200000, input_modalities: ["text", "image"], output_modalities: ["text"] },
-    { id: "poolside/laguna-s-2.1:free", name: "Poolside: Laguna S 2.1 (free)", context_length: 262144, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "poolside/laguna-xs-2.1:free", name: "Poolside: Laguna XS 2.1 (free)", context_length: 262144, input_modalities: ["text"], output_modalities: ["text"] },
-    { id: "stealth/ox-alpha", name: "Ox Alpha", context_length: 1048576, input_modalities: ["text", "image", "video"], output_modalities: ["text"] },
-    { id: "thinkingmachines/inkling:free", name: "Thinking Machines: Inkling (free)", context_length: 262144, input_modalities: ["text", "image", "audio"], output_modalities: ["text"] },
-    { id: "thinkingmachines/inkling-small:free", name: "Thinking Machines: Inkling Small (free)", context_length: 262144, input_modalities: ["text", "image", "audio"], output_modalities: ["text"] },
-    { id: "z-ai/glm-5.2:free", name: "Z.ai: GLM 5.2 (free)", context_length: 256000, input_modalities: ["text"], output_modalities: ["text"] }
+// ── snapshot fallback ──
+const SNAP = {
+  at: "2026-08-24",
+  models: [
+    { id: "stealth/ox-alpha", name: "Ox Alpha", ctx: 1048576, inp: ["text","image","video"], out: ["text"] },
+    { id: "dots-studio/dots-3-note-preview:free", name: "Dots Studio: Dots3-Note Preview (free)", ctx: 512000, inp: ["text","image"], out: ["text"] },
+    { id: "google/gemma-4-26b-a4b-it:free", name: "Google: Gemma 4 26B A4B (free)", ctx: 262144, inp: ["image","text","video"], out: ["text"] },
+    { id: "google/gemma-4-31b-it:free", name: "Google: Gemma 4 31B (free)", ctx: 262144, inp: ["image","text","video"], out: ["text"] },
+    { id: "google/lyria-3-clip-preview", name: "Google: Lyria 3 Clip Preview", ctx: 1048576, inp: ["text","image"], out: ["text","audio"] },
+    { id: "google/lyria-3-pro-preview", name: "Google: Lyria 3 Pro Preview", ctx: 1048576, inp: ["text","image"], out: ["text","audio"] },
+    { id: "liquid/lfm-2.5-2.6b:free", name: "LiquidAI: LFM2.5-2.6B (free)", ctx: 65536, inp: ["text"], out: ["text"] },
+    { id: "nvidia/nemotron-3.5-content-safety:free", name: "NVIDIA: Nemotron 3.5 Content Safety (free)", ctx: 128000, inp: ["text","image"], out: ["text"] },
+    { id: "nvidia/nemotron-3.5-lightning:free", name: "NVIDIA: Nemotron 3.5 Lightning (free)", ctx: 1000000, inp: ["text"], out: ["text"] },
+    { id: "nvidia/nemotron-3-nano-30b-a3b:free", name: "NVIDIA: Nemotron 3 Nano 30B A3B (free)", ctx: 256000, inp: ["text"], out: ["text"] },
+    { id: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free", name: "NVIDIA: Nemotron 3 Nano Omni (free)", ctx: 256000, inp: ["text","audio","image","video"], out: ["text"] },
+    { id: "nvidia/nemotron-3-super-120b-a12b:free", name: "NVIDIA: Nemotron 3 Super (free)", ctx: 262144, inp: ["text"], out: ["text"] },
+    { id: "nvidia/nemotron-3-ultra-550b-a55b:free", name: "NVIDIA: Nemotron 3 Ultra (free)", ctx: 1000000, inp: ["text"], out: ["text"] },
+    { id: "nvidia/nemotron-nano-12b-v2-vl:free", name: "NVIDIA: Nemotron Nano 12B 2 VL (free)", ctx: 128000, inp: ["image","text","video"], out: ["text"] },
+    { id: "nvidia/nemotron-nano-9b-v2:free", name: "NVIDIA: Nemotron Nano 9B V2 (free)", ctx: 128000, inp: ["text"], out: ["text"] },
+    { id: "openrouter/free", name: "Free Models Router", ctx: 200000, inp: ["text","image"], out: ["text"] },
+    { id: "poolside/laguna-s-2.1:free", name: "Poolside: Laguna S 2.1 (free)", ctx: 262144, inp: ["text"], out: ["text"] },
+    { id: "poolside/laguna-xs-2.1:free", name: "Poolside: Laguna XS 2.1 (free)", ctx: 262144, inp: ["text"], out: ["text"] },
+    { id: "thinkingmachines/inkling:free", name: "Thinking Machines: Inkling (free)", ctx: 262144, inp: ["text","image","audio"], out: ["text"] },
+    { id: "thinkingmachines/inkling-small:free", name: "Thinking Machines: Inkling Small (free)", ctx: 262144, inp: ["text","image","audio"], out: ["text"] },
+    { id: "z-ai/glm-5.2:free", name: "Z.ai: GLM 5.2 (free)", ctx: 256000, inp: ["text"], out: ["text"] },
+    { id: "cohere/north-mini-code:free", name: "Cohere: North Mini Code (free)", ctx: 256000, inp: ["text"], out: ["text"] }
   ]
 };
 
 const $ = id => document.getElementById(id);
-const fmt = new Intl.NumberFormat("zh-CN");
-const state = { models: SNAPSHOT.freeModels, fetchedAt: SNAPSHOT.fetchedAt, source: "snapshot", filter: "all" };
+const NF = new Intl.NumberFormat("zh-CN");
 
-/* predicates */
-const isFree  = m => Number(m?.pricing?.prompt ?? 0) === 0 && Number(m?.pricing?.completion ?? 0) === 0;
-const isAnon  = m => /(^|\/)stealth\//i.test(m.id) || /(?:anonymous|anon|stealth|remain anonymous)/i.test([m.id,m.name,m.description].join(" "));
-const isRouter= m => m.id === "openrouter/free";
-const isPrev  = m => /preview/i.test(`${m.id} ${m.name}`);
-const hasVis  = m => (m.input_modalities||[]).some(x => ["image","video"].includes(x));
-const hasAud  = m => (m.input_modalities||[]).includes("audio") || (m.output_modalities||[]).includes("audio");
-const isLarge = m => (m.context_length||0) >= 500000;
+let models = [];
+let fetchedAt = "";
+let source = "snapshot";
+let filter = "all";
 
-function normalize(m) {
-  const a = m.architecture || {};
-  return {
-    id: m.id, name: m.name,
-    context_length: m.context_length || m.top_provider?.context_length || 0,
-    input_modalities: a.input_modalities || m.input_modalities || [],
-    output_modalities: a.output_modalities || m.output_modalities || [],
-    uptime: null,
-  };
+// ── predicates ──
+function isAnon(m)  { return /(^|\/)stealth\//i.test(m.id) || /(?:anonymous|anon|stealth|remain anonymous)/i.test([m.id,m.name].join(" ")); }
+function isRouter(m) { return m.id === "openrouter/free"; }
+function isPrev(m)   { return /preview/i.test(`${m.id} ${m.name}`); }
+function hasVis(m)   { return (m.inp||[]).some(x => ["image","video"].includes(x)); }
+function hasAud(m)   { return (m.inp||[]).includes("audio") || (m.out||[]).includes("audio"); }
+function isLarge(m)  { return (m.ctx||0) >= 500000; }
+
+function initFromRaw(raw) {
+  return raw.map(m => {
+    const a = m.architecture || {};
+    return {
+      id: m.id, name: m.name,
+      ctx: m.context_length || m.top_provider?.context_length || 0,
+      inp: a.input_modalities || m.input_modalities || [],
+      out: a.output_modalities || m.output_modalities || [],
+      uptime5m: null, uptime30m: null, uptime1d: null,
+    };
+  });
+}
+
+// ── render helpers ──
+const H = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const HA = s => H(s).replace(/`/g,"&#96;");
+
+function ubar(label, val) {
+  if (val == null) return '';
+  const cls = val >= 99.5 ? 'good' : val >= 95 ? 'warn' : 'bad';
+  return `<span class="urow"><span class="ulabel">${label}</span><span class="ubar"><span class="fill ${cls}" style="width:${Math.min(val,100)}%"></span></span><span>${val.toFixed(1)}%</span></span>`;
+}
+
+function card(m) {
+  const cls = ["card", isAnon(m)?"stealth":"", isRouter(m)?"router":""].filter(Boolean).join(" ");
+  const ctx = m.ctx >= 1e6 ? (m.ctx/1e6).toFixed(1)+"M" : NF.format(m.ctx);
+  let t = '<span class="tag tag-free">$0</span>';
+  if (isAnon(m))  t += '<span class="tag tag-anon">匿名</span>';
+  if (isRouter(m)) t += '<span class="tag tag-router">路由</span>';
+  if (isPrev(m))   t += '<span class="tag tag-other">预览</span>';
+  if (hasVis(m))   t += '<span class="tag tag-vision">视觉</span>';
+  if (hasAud(m))   t += '<span class="tag tag-audio">音频</span>';
+  if (isLarge(m))  t += '<span class="tag tag-ctx">≥500K</span>';
+  const up = ubar("1d", m.uptime1d) + ubar("30m", m.uptime30m) + ubar("5m", m.uptime5m);
+  return `<div class="${cls}">
+    <div class="row"><div><div class="name">${H(m.name||m.id)}</div><div class="mid">${H(m.id)}</div></div><button data-cp="${HA(m.id)}">复制</button></div>
+    <div class="tags">${t}</div>
+    <div class="info"><b>上下文</b> ${ctx} &nbsp;·&nbsp; <b>输入</b> ${(m.inp||[]).join(", ")||"-"} → <b>输出</b> ${(m.out||[]).join(", ")||"-"}</div>
+    ${up ? '<div class="uptimes">'+up+'</div>' : '<span style="font-size:10px;color:#484f58">可用率加载中...</span>'}
+  </div>`;
+}
+
+function trow(m) {
+  const types = [];
+  if (isAnon(m)) types.push('<span class="tag tag-anon">匿名</span>');
+  if (isRouter(m)) types.push('<span class="tag tag-router">路由</span>');
+  if (isPrev(m)) types.push('<span class="tag tag-other">预览</span>');
+  if (hasVis(m)) types.push('<span class="tag tag-vision">视觉</span>');
+  if (hasAud(m)) types.push('<span class="tag tag-audio">音频</span>');
+  if (isLarge(m)) types.push('<span class="tag tag-ctx">≥500K</span>');
+  const up = ubar("1d", m.uptime1d) + ubar("30m", m.uptime30m) + ubar("5m", m.uptime5m);
+  return `<tr>
+    <td>${H(m.name||m.id)}</td><td><code>${H(m.id)}</code></td>
+    <td>${types.join(" ")||'<span class="tag tag-free">$0</span>'}</td>
+    <td>${NF.format(m.ctx||0)}</td>
+    <td style="min-width:130px;font-size:10px">${up||'—'}</td>
+    <td>${H((m.inp||[]).join(", ")||"-")}</td><td>${H((m.out||[]).join(", ")||"-")}</td>
+    <td><button data-cp="${HA(m.id)}">复制</button></td></tr>`;
 }
 
 function score(m) {
@@ -479,144 +251,47 @@ function score(m) {
   if (isLarge(m)) s += 160;
   if (hasVis(m)) s += 70;
   if (hasAud(m)) s += 35;
-  return s + Math.min((m.context_length||0)/10000, 100);
+  return s + Math.min((m.ctx||0)/10000, 100);
 }
 
 function filtered() {
-  const q = $("searchBox").value.trim().toLowerCase();
-  const sort = $("sortSelect").value;
-  let list = state.models.filter(m => {
-    const hay = `${m.id} ${m.name}`.toLowerCase();
-    if (q && !hay.includes(q)) return false;
-    switch (state.filter) {
-      case "anonymous": return isAnon(m);
-      case "router": return isRouter(m);
-      case "preview": return isPrev(m);
-      case "vision": return hasVis(m);
-      case "audio": return hasAud(m);
-      case "largeContext": return isLarge(m);
+  let list = models.filter(m => {
+    const q = $("search").value.trim().toLowerCase();
+    if (q && !`${m.id} ${m.name}`.toLowerCase().includes(q)) return false;
+    switch (filter) {
+      case "anonymous": return isAnon(m); case "router": return isRouter(m);
+      case "preview": return isPrev(m); case "vision": return hasVis(m);
+      case "audio": return hasAud(m); case "largeContext": return isLarge(m);
       default: return true;
     }
   });
-  if (sort === "context") return list.sort((a,b) => (b.context_length||0)-(a.context_length||0));
-  if (sort === "name") return list.sort((a,b) => a.name.localeCompare(b.name));
-  if (sort === "id") return list.sort((a,b) => a.id.localeCompare(b.id));
-  return list.sort((a,b) => score(b)-score(a) || a.id.localeCompare(b.id));
-}
-
-function uptimeBar(uptime) {
-  if (uptime == null) return '<span class="uptime-row"><span style="color:#484f58">—</span></span>';
-  const cls = uptime >= 99.5 ? 'good' : uptime >= 95 ? 'warn' : 'bad';
-  return `<span class="uptime-row"><span class="uptime-bar"><span class="fill ${cls}" style="width:${Math.min(uptime,100)}%"></span></span><span class="uptime-pct">${uptime.toFixed(1)}%</span></span>`;
-}
-
-async function fetchUptime() {
-  const ids = state.models.map(m => m.id);
-  const results = await Promise.allSettled(
-    ids.map(id => fetch(`https://openrouter.ai/api/v1/models/${encodeURIComponent(id)}/endpoints`).then(r => r.ok ? r.json() : Promise.reject(r.status)))
-  );
-  const uptimeMap = {};
-  results.forEach((r, i) => {
-    if (r.status === 'fulfilled' && r.value?.data?.endpoints?.length) {
-      const eps = r.value.data.endpoints;
-      // average uptime across all endpoints, use 1d as most representative
-      const vals = eps.map(e => e.uptime_last_1d).filter(v => v != null);
-      uptimeMap[ids[i]] = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
-    }
-  });
-  state.models.forEach(m => {
-    if (uptimeMap[m.id] != null) m.uptime = uptimeMap[m.id];
-  });
-}
-const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ea = s => esc(s).replace(/`/g,"&#96;");
-
-function tag(l, c) { return `<span class="tag ${c}">${esc(l)}</span>`; }
-
-function tags(m) {
-  let t = [tag("免费","tag-free")];
-  if (isAnon(m)) t.push(tag("匿名","tag-anon"));
-  if (isRouter(m)) t.push(tag("路由","tag-router"));
-  if (isPrev(m)) t.push(tag("预览","tag-preview"));
-  if (hasVis(m)) t.push(tag("视觉","tag-vision"));
-  if (hasAud(m)) t.push(tag("音频","tag-audio"));
-  if (isLarge(m)) t.push(tag("≥500K","tag-ctx"));
-  return t.join("");
-}
-
-function card(m) {
-  const cls = ["model-card", isAnon(m)?"stealth":"", isRouter(m)?"router":""].filter(Boolean).join(" ");
-  const ctx = m.context_length >= 1e6 ? (m.context_length/1e6).toFixed(1)+"M" : m.context_length >= 1000 ? fmt.format(m.context_length) : m.context_length;
-  return `
-    <div class="${cls}">
-      <div class="top">
-        <div>
-          <div class="name">${esc(m.name||m.id)}</div>
-          <div class="model-id">${esc(m.id)}</div>
-        </div>
-        <button class="copy-btn" data-copy="${ea(m.id)}">复制</button>
-      </div>
-      <div class="tags">${tags(m)}</div>
-      <div class="details">
-        <b>上下文</b> ${ctx} &nbsp;·&nbsp;
-        <b>输入</b> ${(m.input_modalities||[]).join(", ")||"-"} → <b>输出</b> ${(m.output_modalities||[]).join(", ")||"-"}
-      </div>
-      <div style="margin-top:2px">${uptimeBar(m.uptime)}</div>
-    </div>`;
-}
-
-function tblRow(m) {
-  const types = [isAnon(m)?"匿名":"", isRouter(m)?"路由":"", isPrev(m)?"预览":"", hasVis(m)?"视觉":"", hasAud(m)?"音频":"", isLarge(m)?"≥500K":""].filter(Boolean);
-  return `<tr>
-    <td>${esc(m.name||m.id)}</td>
-    <td><code>${esc(m.id)}</code></td>
-    <td>${types.map(x => `<span class="tag tag-${x==="匿名"?"anon":x==="路由"?"router":x==="视觉"?"vision":x==="≥500K"?"ctx":"preview"}">${esc(x)}</span>`).join(" ")}</td>
-    <td>${fmt.format(m.context_length||0)}</td>
-    <td>${esc((m.input_modalities||[]).join(", ")||"-")}</td>
-    <td>${esc((m.output_modalities||[]).join(", ")||"-")}</td>
-    <td style="min-width:130px">${uptimeBar(m.uptime)}</td>
-    <td><button data-copy="${ea(m.id)}">复制</button></td>
-  </tr>`;
+  const s = $("sort").value;
+  if (s === "context") list.sort((a,b) => (b.ctx||0)-(a.ctx||0));
+  else if (s === "uptime") list.sort((a,b) => (b.uptime1d||-1)-(a.uptime1d||-1));
+  else if (s === "name") list.sort((a,b) => a.name.localeCompare(b.name));
+  else if (s === "id") list.sort((a,b) => a.id.localeCompare(b.id));
+  else list.sort((a,b) => score(b)-score(a) || a.id.localeCompare(b.id));
+  return list;
 }
 
 function render() {
-  const visible = filtered();
-  const maxCtx = state.models.reduce((mx,m) => Math.max(mx,m.context_length||0), 0);
+  const list = filtered();
+  const maxCtx = models.reduce((mx,m) => Math.max(mx,m.ctx||0), 0);
+  $("freeCount").textContent = NF.format(models.length);
+  $("anonCount").textContent = NF.format(models.filter(isAnon).length);
+  $("visionCount").textContent = NF.format(models.filter(hasVis).length);
+  $("maxContext").textContent = maxCtx >= 1e6 ? (maxCtx/1e6).toFixed(1)+"M" : NF.format(maxCtx);
+  $("fetchedAt").textContent = source === "live" ? `实时 · ${new Date(fetchedAt).toLocaleString("zh-CN")}` : `快照 · ${SNAP.at}`;
 
-  $("freeCount").textContent = fmt.format(state.models.length);
-  $("anonCount").textContent = fmt.format(state.models.filter(isAnon).length);
-  $("previewCount").textContent = fmt.format(state.models.filter(isPrev).length);
-  $("visionCount").textContent = fmt.format(state.models.filter(hasVis).length);
-  $("maxContext").textContent = maxCtx >= 1e6 ? (maxCtx/1e6).toFixed(1)+"M" : fmt.format(maxCtx);
-  $("fetchedAt").textContent = state.source === "live"
-    ? `实时 · ${new Date(state.fetchedAt).toLocaleString("zh-CN")}`
-    : `快照 · ${SNAPSHOT.fetchedAt}`;
+  const cards = $("view").value === "cards";
+  $("grid").style.display = cards ? "grid" : "none";
+  $("twrap").style.display = cards ? "none" : "block";
+  $("grid").innerHTML = list.length ? list.map(card).join("") : '<div class="empty">没有匹配的模型</div>';
+  $("tbody").innerHTML = list.length ? list.map(trow).join("") : '<tr><td colspan="8" style="color:#484f58">没有匹配的模型</td></tr>';
 
-  const cards = $("viewSelect").value === "cards";
-  $("modelGrid").style.display = cards ? "grid" : "none";
-  $("tableWrap").style.display = cards ? "none" : "block";
-  $("modelGrid").innerHTML = visible.length ? visible.map(card).join("") : '<div class="empty">没有匹配的模型</div>';
-  $("tableBody").innerHTML = visible.length ? visible.map(tblRow).join("") : '<tr><td colspan="8" style="color:#484f58">没有匹配的模型</td></tr>';
-
-  /* quick ref */
-  const anon = state.models.filter(isAnon).sort((a,b)=>score(b)-score(a));
-  const vis  = state.models.filter(hasVis).sort((a,b)=>score(b)-score(a));
-  const ba = anon[0]?.id || "—";
-  const bv = vis[0]?.id || "—";
-  $("bestAnon").textContent = ba;
-  $("bestVision").textContent = bv;
-  document.querySelectorAll(".ref-item button[data-copy]").forEach(b => {
-    if (b.closest(".ref-item").querySelector("#bestAnon")) b.dataset.copy = ba;
-    if (b.closest(".ref-item").querySelector("#bestVision")) b.dataset.copy = bv;
-  });
-
-  bindCopy();
-}
-
-function bindCopy() {
-  document.querySelectorAll("[data-copy]").forEach(b => {
+  document.querySelectorAll("[data-cp]").forEach(b => {
     if (b.dataset.bound) return; b.dataset.bound = "1";
-    b.addEventListener("click", async () => { await cp(b.dataset.copy); toast("已复制"); });
+    b.addEventListener("click", async () => { await cp(b.dataset.cp); toast("已复制"); });
   });
 }
 
@@ -624,77 +299,73 @@ async function cp(t) {
   if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(t);
   const a = document.createElement("textarea"); a.value = t; document.body.appendChild(a); a.select(); document.execCommand("copy"); a.remove();
 }
+let _tt;
+function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("show"); clearTimeout(_tt); _tt = setTimeout(() => e.classList.remove("show"), 1100); }
 
-let _toastTimer;
-function toast(t) {
-  const el = $("toast"); el.textContent = t; el.classList.add("show");
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => el.classList.remove("show"), 1100);
-}
-
+// ── data fetching ──
 async function refresh() {
   $("refreshBtn").disabled = true;
-  $("statusDot").className = "status-dot load";
-  $("statusText").textContent = "拉取中...";
+  setStatus("busy", "拉取模型列表...");
   try {
-    const r = await fetch(API_URL, { cache: "no-store" });
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const r = await fetch("https://openrouter.ai/api/v1/models", { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP "+r.status);
     const d = await r.json();
-    state.models = d.data.filter(isFree).map(normalize);
-    state.fetchedAt = new Date().toISOString();
-    state.source = "live";
-    $("statusDot").className = "status-dot live";
-    $("statusText").textContent = "实时";
-    render();
-    // fetch uptime in background
-    fetchUptime().then(() => { render(); $("statusText").textContent = "实时+可用率"; });
-  } catch {
-    state.models = SNAPSHOT.freeModels;
-    state.fetchedAt = SNAPSHOT.fetchedAt;
-    state.source = "snapshot";
-    $("statusDot").className = "status-dot off";
-    $("statusText").textContent = "离线(快照)";
-    render();
-  } finally {
+    const free = d.data.filter(m => {
+      const p = Number(m?.pricing?.prompt ?? 0); const c = Number(m?.pricing?.completion ?? 0);
+      return p === 0 && c === 0;
+    });
+    models = initFromRaw(free);
+    fetchedAt = new Date().toISOString();
+    source = "live";
+  } catch(e) {
+    models = SNAP.models.map(m => ({...m}));
+    fetchedAt = SNAP.at; source = "snapshot";
+    setStatus("off", "离线(快照)");
     $("refreshBtn").disabled = false;
+    render();
+    return;
   }
+  setStatus("live", "实时"); render();
+  // fetch uptime
+  setStatus("busy", "拉取可用率..."); render();
+  const ids = models.map(m => m.id);
+  const results = await Promise.allSettled(
+    ids.map(id => fetch("https://openrouter.ai/api/v1/models/"+encodeURIComponent(id)+"/endpoints").then(r => r.ok ? r.json() : Promise.reject()))
+  );
+  results.forEach((r, i) => {
+    if (r.status !== "fulfilled" || !r.value?.data?.endpoints?.length) return;
+    const ep = r.value.data.endpoints[0];
+    models[i].uptime1d = ep.uptime_last_1d ?? null;
+    models[i].uptime30m = ep.uptime_last_30m ?? null;
+    models[i].uptime5m = ep.uptime_last_5m ?? null;
+  });
+  setStatus("live", "实时+可用率");
+  $("refreshBtn").disabled = false;
+  render();
 }
 
-function exportJson() {
-  const d = {
-    fetchedAt: state.fetchedAt,
-    source: state.source === "live" ? API_URL : "snapshot",
-    freeCount: state.models.length,
-    anonymousFree: state.models.filter(isAnon),
-    freeModels: state.models,
-  };
-  const b = new Blob([JSON.stringify(d,null,2)],{type:"application/json"});
-  const u = URL.createObjectURL(b);
-  const a = document.createElement("a"); a.href = u; a.download = "openrouter-free-models.json"; a.click();
-  URL.revokeObjectURL(u);
-  toast("已导出 JSON");
+function setStatus(kind, text) {
+  $("statusDot").className = "dot " + kind;
+  $("statusText").textContent = text;
 }
 
-/* events */
-document.querySelectorAll(".tab").forEach(b => {
+// ── events ──
+$("refreshBtn").addEventListener("click", refresh);
+$("search").addEventListener("input", render);
+$("sort").addEventListener("change", render);
+$("view").addEventListener("change", render);
+document.querySelectorAll(".tabs button").forEach(b => {
   b.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-    b.classList.add("active");
-    state.filter = b.dataset.filter;
+    document.querySelectorAll(".tabs button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    filter = b.dataset.f;
     render();
   });
 });
-$("refreshBtn").addEventListener("click", refresh);
-$("exportBtn").addEventListener("click", exportJson);
-$("searchBox").addEventListener("input", render);
-$("sortSelect").addEventListener("change", render);
-$("viewSelect").addEventListener("change", render);
-$("copyAnonBtn")?.addEventListener("click", async () => {
-  const ids = state.models.filter(isAnon).map(m=>m.id).join("\n");
-  await cp(ids||"没有匿名模型");
-  toast("匿名 ID 已复制");
-});
 
+// ── start ──
+models = SNAP.models.map(m => ({...m, uptime1d:null, uptime30m:null, uptime5m:null}));
+fetchedAt = SNAP.at; source = "snapshot";
 render();
 refresh();
 </script>
