@@ -212,6 +212,31 @@
       font-weight: 500;
     }
 
+    /* uptime bar */
+    .uptime-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #8b949e;
+    }
+    .uptime-bar {
+      flex: 1;
+      height: 4px;
+      background: #21262d;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .uptime-bar .fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width .3s;
+    }
+    .uptime-bar .fill.good { background: #3fb950; }
+    .uptime-bar .fill.warn { background: #d2991d; }
+    .uptime-bar .fill.bad  { background: #f85149; }
+    .uptime-pct { font-variant-numeric: tabular-nums; min-width: 48px; text-align: right; }
+
     /* ── table view ── */
     .table-wrap {
       display: none;
@@ -384,7 +409,7 @@
   <table>
     <thead>
       <tr>
-        <th>模型</th><th>ID</th><th>类型</th><th>上下文</th><th>输入</th><th>输出</th><th></th>
+        <th>模型</th><th>ID</th><th>类型</th><th>上下文</th><th>输入</th><th>输出</th><th>24h 可用率</th><th></th>
       </tr>
     </thead>
     <tbody id="tableBody"></tbody>
@@ -443,6 +468,7 @@ function normalize(m) {
     context_length: m.context_length || m.top_provider?.context_length || 0,
     input_modalities: a.input_modalities || m.input_modalities || [],
     output_modalities: a.output_modalities || m.output_modalities || [],
+    uptime: null,
   };
 }
 
@@ -478,7 +504,30 @@ function filtered() {
   return list.sort((a,b) => score(b)-score(a) || a.id.localeCompare(b.id));
 }
 
-const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function uptimeBar(uptime) {
+  if (uptime == null) return '<span class="uptime-row"><span style="color:#484f58">—</span></span>';
+  const cls = uptime >= 99.5 ? 'good' : uptime >= 95 ? 'warn' : 'bad';
+  return `<span class="uptime-row"><span class="uptime-bar"><span class="fill ${cls}" style="width:${Math.min(uptime,100)}%"></span></span><span class="uptime-pct">${uptime.toFixed(1)}%</span></span>`;
+}
+
+async function fetchUptime() {
+  const ids = state.models.map(m => m.id);
+  const results = await Promise.allSettled(
+    ids.map(id => fetch(`https://openrouter.ai/api/v1/models/${encodeURIComponent(id)}/endpoints`).then(r => r.ok ? r.json() : Promise.reject(r.status)))
+  );
+  const uptimeMap = {};
+  results.forEach((r, i) => {
+    if (r.status === 'fulfilled' && r.value?.data?.endpoints?.length) {
+      const eps = r.value.data.endpoints;
+      // average uptime across all endpoints, use 1d as most representative
+      const vals = eps.map(e => e.uptime_last_1d).filter(v => v != null);
+      uptimeMap[ids[i]] = vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : null;
+    }
+  });
+  state.models.forEach(m => {
+    if (uptimeMap[m.id] != null) m.uptime = uptimeMap[m.id];
+  });
+}
 const ea = s => esc(s).replace(/`/g,"&#96;");
 
 function tag(l, c) { return `<span class="tag ${c}">${esc(l)}</span>`; }
@@ -511,8 +560,8 @@ function card(m) {
         <b>上下文</b> ${ctx} &nbsp;·&nbsp;
         <b>输入</b> ${(m.input_modalities||[]).join(", ")||"-"} → <b>输出</b> ${(m.output_modalities||[]).join(", ")||"-"}
       </div>
+      <div style="margin-top:2px">${uptimeBar(m.uptime)}</div>
     </div>`;
-}
 
 function tblRow(m) {
   const types = [isAnon(m)?"匿名":"", isRouter(m)?"路由":"", isPrev(m)?"预览":"", hasVis(m)?"视觉":"", hasAud(m)?"音频":"", isLarge(m)?"≥500K":""].filter(Boolean);
@@ -523,6 +572,7 @@ function tblRow(m) {
     <td>${fmt.format(m.context_length||0)}</td>
     <td>${esc((m.input_modalities||[]).join(", ")||"-")}</td>
     <td>${esc((m.output_modalities||[]).join(", ")||"-")}</td>
+    <td style="min-width:130px">${uptimeBar(m.uptime)}</td>
     <td><button data-copy="${ea(m.id)}">复制</button></td>
   </tr>`;
 }
@@ -544,7 +594,7 @@ function render() {
   $("modelGrid").style.display = cards ? "grid" : "none";
   $("tableWrap").style.display = cards ? "none" : "block";
   $("modelGrid").innerHTML = visible.length ? visible.map(card).join("") : '<div class="empty">没有匹配的模型</div>';
-  $("tableBody").innerHTML = visible.length ? visible.map(tblRow).join("") : '<tr><td colspan="7" style="color:#484f58">没有匹配的模型</td></tr>';
+  $("tableBody").innerHTML = visible.length ? visible.map(tblRow).join("") : '<tr><td colspan="8" style="color:#484f58">没有匹配的模型</td></tr>';
 
   /* quick ref */
   const anon = state.models.filter(isAnon).sort((a,b)=>score(b)-score(a));
@@ -593,15 +643,18 @@ async function refresh() {
     state.source = "live";
     $("statusDot").className = "status-dot live";
     $("statusText").textContent = "实时";
+    render();
+    // fetch uptime in background
+    fetchUptime().then(() => { render(); $("statusText").textContent = "实时+可用率"; });
   } catch {
     state.models = SNAPSHOT.freeModels;
     state.fetchedAt = SNAPSHOT.fetchedAt;
     state.source = "snapshot";
     $("statusDot").className = "status-dot off";
     $("statusText").textContent = "离线(快照)";
+    render();
   } finally {
     $("refreshBtn").disabled = false;
-    render();
   }
 }
 
